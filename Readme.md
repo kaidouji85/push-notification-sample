@@ -17,8 +17,18 @@ vi main.js
 
 npm start
 
-# ブラウザでlocalhost:8080を開く
-# 開発者モードを開き、Service WorkerのPushを実行する
+# ローカルでのPush通知
+# (1)ブラウザでlocalhost:8080を開く
+# (2)開発者モードを開き、Service WorkerのPushを実行する
 # 開発者モードの使い方は、以下URLを参照
 # https://web-push-codelab.glitch.me/
+# (3)端末にPush通知がくる
+
+# ネット経由でのPush通知
+# (1)ブラウザでlocalhost:8080を開く
+# (2)Push Exampleの下に書かれている文字をコピーして、
+# (3)https://web-push-codelab.glitch.me/を開く
+# (4)「Subscription to Send To」に(2)の内容をペーストする
+# (5)「SEND PUSH MESSAGE」をクリックする
+# (6)端末にPush通知がくる
 ```
