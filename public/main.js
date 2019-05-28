@@ -12,7 +12,7 @@ window.onload = async () => {
 
     const hasServiceWorker = 'serviceWorker' in navigator;
     const hasPushManager = 'PushManager' in window;
-    if (!hasServiceWorker && !hasPushManager) {
+    if (!hasServiceWorker || !hasPushManager) {
       consoloe.log('このブラウザではPush通知がサポートされていません');
       return;
     }
@@ -35,7 +35,6 @@ window.onload = async () => {
 
 /**
  * サブスクリプションを登録するヘルパー関数
- *
  *
  * @param {ServiceWorkerRegistration} serviceWorker
  * @returns {Promise<PushSubscription>} 登録したサブスクリプション
