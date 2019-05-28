@@ -28,6 +28,12 @@ window.onload = async () => {
   }
 };
 
+/**
+ * 公開鍵からPush通知サーバーキーを生成する
+ *
+ * @param {string} base64String 公開鍵
+ * @returns {Uint8Array} サーバーキー
+ */
 function urlB64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding)
