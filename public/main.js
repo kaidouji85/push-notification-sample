@@ -18,33 +18,73 @@ window.onload = async () => {
     }
 
     const serviceWorker = await navigator.serviceWorker.register('sw.js');
-    let subscription = await serviceWorker.pushManager.getSubscription();
-    if (!subscription) {
-      subscription = await registerSubscription(serviceWorker);
-    }
 
-    const subscriptionJSON = document.querySelector('.subscription-json');
-    if (!subscriptionJSON) {
-      return;
-    }
-    subscriptionJSON.textContent = JSON.stringify(subscription);
+    document.querySelectorAll('.notification-subscribe').forEach(v => {
+      v.addEventListener('click', event => {
+        subscribe(serviceWorker).catch(error => {
+          console.error(error);
+        })
+      });
+    });
+
+    document.querySelectorAll('.notification-unsubscribe').forEach(v => {
+      v.addEventListener('click', event => {
+        unsubscribe(serviceWorker).catch(error => {
+          console.error(error);
+        })
+      });
+    });
   } catch (e) {
     throw e;
   }
 };
 
 /**
- * サブスクリプションを登録するヘルパー関数
+ * PUSH通知を購読する
  *
  * @param {ServiceWorkerRegistration} serviceWorker
- * @returns {Promise<PushSubscription>} 登録したサブスクリプション
+ * @returns {Promise<void>}
  */
-function registerSubscription(serviceWorker) {
-  const applicationServerKey = urlB64ToUint8Array(PUBLIC_KEY);
-  return serviceWorker.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: applicationServerKey
-  });
+async function subscribe(serviceWorker) {
+  try {
+    const existingSubscription = await serviceWorker.pushManager.getSubscription();
+    if (existingSubscription) {
+      console.log('already subscribe.\r\nif you refresh public-key, please push "unsubscribe" button.');
+      return;
+    }
+
+    const applicationServerKey = urlB64ToUint8Array(PUBLIC_KEY);
+    const subscription = await serviceWorker.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: applicationServerKey
+    });
+
+    document.querySelectorAll('.subscription-json').forEach(v => {
+      v.textContent = JSON.stringify(subscription);
+    });
+  } catch(e) {
+    throw e;
+  }
+}
+
+/**
+ * PUSH通知の購読停止する
+ *
+ * @param {ServiceWorkerRegistration} serviceWorker
+ * @returns {Promise<void>}
+ */
+async function unsubscribe(serviceWorker) {
+  try {
+    const existingSubscription = await serviceWorker.pushManager.getSubscription();
+    if (!existingSubscription) {
+      console.log('no subscription');
+      return;
+    }
+
+    await existingSubscription.unsubscribe();
+  } catch(e) {
+    throw e;
+  }
 }
 
 /**
